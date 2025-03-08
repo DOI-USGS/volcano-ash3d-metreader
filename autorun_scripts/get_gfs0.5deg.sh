@@ -18,17 +18,31 @@
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
 
-# Shell script that downloads gfs 0.5degree data files for the current date.
+# Shell script that downloads gfs 0.5 degree data files for the current date.
 # This script is called from autorun_gfs0.5deg.sh and takes two command-line arguments
 #   get_gfs0.5deg.sh YYYYMMDD HR
 
-# This is the location where the downloaded windfiles will be placed.
-# Please edit this to suit your system.
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will be placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT/USGSROOT are set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
 if [ -z ${WINDROOT} ];then
- # Standard Linux location
+ # default location
  WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
+fi
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
+fi
+
+if [ $# -eq 0 ]
+  then
+  echo "No arguments supplied"
+  echo "Usage: get_gfs.sh YYYYMMDD FCpackage"
+  echo "       where YYYYMMDD   = date"
+  echo "             FCpackage  = 0, 6, 12, or 18"
+  exit
 fi
 
 yearmonthday=$1

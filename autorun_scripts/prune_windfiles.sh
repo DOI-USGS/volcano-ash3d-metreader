@@ -25,14 +25,14 @@ echo "running prune_windfiles.sh"
 echo `date`
 echo "------------------------------------------------------------"
 
-# This is the location where the downloaded windfiles will be placed.
-# Please edit this to suit your system or ensure WINDROOT is set as an environment variable
-# in ~/.bash_profile or ~/.bashrc
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will be placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT is set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
 if [ -z ${WINDROOT} ];then
- # Standard Linux location
+ # default location
  WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
 fi
 
 GFS_retain=17

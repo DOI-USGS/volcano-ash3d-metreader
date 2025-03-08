@@ -18,7 +18,7 @@
 
 \title{MetReader: Documentation and User's Guide}   % type title between braces
 \author{Hans F. Schwaiger}
-\date{March 27, 2024}    % type date between braces
+\date{March 7, 2025}    % type date between braces
 \maketitle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -131,7 +131,7 @@ the makefile (the default is \texttt{/opt/USGS}) and type:
      make check
      sudo make install
 \end{verbatim}
-This will also install scripts that can be used to download the $0.5^{\circ}$ GFS
+This will also install scripts that can be used to download the $0.25^{\circ}$, $0.5^{\circ}$ or $1.0^{\circ}$ GFS
 forecast files and the NCEP $2.5^{\circ}$ Reanalysis files.
 
 You will need to have write permission in \texttt{INSTALLDIR}
@@ -142,20 +142,28 @@ directory structure:
 /opt/USGS
 |-- bin
 |   |-- autorun_scripts
-|   |   |-- autorun_gfs0.5deg.sh
+|   |   |-- autorun_ecmwf.sh
+|   |   |-- autorun_gfs.sh
+|   |   |-- autorun_nam.sh
 |   |   |-- autorun_NCEP_50YearReanalysis.sh
-|   |   |-- convert_gfs0.5deg.sh
-|   |   |-- get_gfs0.5deg.sh
+|   |   |-- convert_ecmwf.sh
+|   |   |-- convert_gfs.sh
+|   |   |-- get_ecmwf.sh
+|   |   |-- get_gfs.sh
+|   |   |-- get_gmao.sh
+|   |   |-- get_nam.sh
 |   |   |-- get_NCEP_50YearReanalysis.sh
-|   |   `-- grib2nc.sh
+|   |   |-- grib2nc.sh
+|   |   |-- probe_volc.sh
+|   |   `-- prune_windfiles.sh
 |   |-- gen_GRIB_index
 |   |-- HoursSince1900
 |   |-- MetCheck
+|   |-- MetProbe
 |   |-- MetRegrid
 |   |-- MetSonde
 |   |-- MetTraj_B
 |   |-- MetTraj_F
-|   |-- MetProbe
 |   |-- MR_ASCII_check
 |   |-- project_for
 |   |-- project_inv
@@ -172,7 +180,7 @@ directory structure:
 The \texttt{makefile} included the following variables that can be changed, depending on your
 system.
 \begin{itemize}
-\item \texttt{SYSTEM} : \texttt{gfortran}, \texttt{ifort}, or \texttt{aocc}\\
+\item \texttt{SYSTEM} : \texttt{gfortran}, \texttt{ifort}, \texttt{aocc}, or \texttt{nvhpc}\\
 Fortran compiler.
 \item \texttt{RUN} : \texttt{DEBUG}, \texttt{PROF} or \texttt{OPT}\\
 Sets class of compiler flags for debugging, profiling, of optimization:
@@ -369,6 +377,9 @@ Data are stored with each file containing 24 hours of values with a file structu
 \end{verbatim}
 Data from this site is provided in GRIB1 format and must be converted to NetCDF
 with the NCAR Command Language (\texttt{ncl}) tool \texttt{ncl\_convert2nc -L}.
+ERA-5 data is also available from \url{https://cds.climate.copernicus.eu} where
+sub-regions, variables and time-step can be selected and  downloaded as a
+single GRIB or NetCDF file (\texttt{MR\_iwind}=3).
 
 \subparagraph{ECMWF ERA 20th Century Reanalysis:}
 \texttt{MR\_iwindformat=30}
@@ -1211,18 +1222,19 @@ can be provided as a third command-line argument.
 \section{Windfile management scripts}
 Scripts used to manage GFS and NCEP Reanalysis files are provided in the
 folder \texttt{autorun\_scripts}.
-The script \texttt{autorun\_gfs0.5deg\_00} (and the dependent scripts
-\texttt{get\_gfs0.5deg.sh} and\\
-\texttt{convert\_gfs0.5deg.sh}) is used for downloading and
-converting the $0.5^{\circ}$ GFS files from NCEP.  This script is intended to be
+The script \texttt{autorun\_gfs\_00} (and the dependent scripts
+\texttt{get\_gfs.sh} and\\
+\texttt{convert\_gfs.sh}) is used for downloading and
+converting the $0.25^{\circ}$, $0.5^{\circ}$, or $1.0^{\circ}$ GFS files from NCEP.  This script is intended to be
 run from a cron job and take as a parameter, the hour of the forecast package.  For example
-\texttt{autorun\_gfs0.5deg.sh 0} will download for 00Z for the current date.  These 
+\texttt{autorun\_gfs.sh 0p50 0} will download for 00Z for the current date.  These 
 scripts use a default root download directory of \texttt{/data/WindFiles}, but this can
-be modified within the scripts.  The GFS files will be downloaded to\\
+be modified within the scripts or via an environment variable \texttt{WINDROOT="/data/WindFiles"}.
+The GFS files will be downloaded to\\
 \texttt{/data/WindFiles/gfs/gfs.YYYYMMDDHH} where \texttt{HH} is the forecast hour
-(00, 06, 12, or 18).  The forecast files from hours 0-99 are downloaded then converted using
-netcdf-java 4.5.  The path this package is set to \texttt{~/ncj/netcdfAll-4.5.jar} but can be
-modified in \texttt{convert\_gfs0.5deg.sh}.
+(00, 06, 12, or 18).  The forecast files from hours 0-198 are downloaded then converted using
+netcdf-java.  The path this package is set to \texttt{~/ncj/netcdfAll-4.5.jar} but can be
+modified in \texttt{convert\_gfs.sh}.
 
 Similarly, the script \texttt{get\_NCEP\_50YearReanalysis.sh} manages the downloading of 
 the NCEP reanalysis files.  These are placed in \texttt{/data/WindFiles/NCEP/YYYY/}
@@ -1365,6 +1377,7 @@ MR\_iwind & MR\_iwindformat & Product & NCEP Grid & resolution \\
   \hline
 4 &  32 & Air Force Weather Agency subcenter = 0 & None & $0.25^{\circ}$ \\
 4 &  33 & CCSM3.0 Community Atmosphere Model &None & $3.75 \, \times \,3.7^{\circ}$\\
+4 &  34 & ECMWF & 193 & $0.25 \, ^{\circ}$ \\
   \hline
 4 &  40 & NASA GEOS-5 Cp & None & $0.625 \, \times \,0.5^{\circ}$ \\
 4 &  41 & NASA GEOS-5 Np & None & $0.3125 \, \times \,0.25^{\circ}$\\

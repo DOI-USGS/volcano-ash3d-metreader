@@ -59,8 +59,9 @@ the makefile (the default is `/opt/USGS`) and type:
 
   `make install`
 
-This will also install scripts that can be used to download the 0.5 degree GFS
-forecast files and the NCEP 2.5-degree Reanalysis files.
+This will also install scripts that can be used to download a variety of NWP products
+including the NCEP 2.5-degree Reanalysis files and the GFS, NAM, ECMWF forecasts.
+Some of these might require license agreements.
 
 You will need to have write permission in `${INSTALLDIR}` or install as root.
 

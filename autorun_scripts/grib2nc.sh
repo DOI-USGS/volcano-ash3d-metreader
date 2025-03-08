@@ -20,11 +20,8 @@
 
 # Shell script that converts a grib2 file to netcdf using netcdf-java
 # This script takes one command-line argument, the name of the grib file
-
-# Please edit these variables to match your system and location of netcdf-java
-#JAVAHOME="/usr/local/bin/"
-#NCJv="${HOME}/ncj/netcdfAll-4.5.jar"
 rc=0
+# Search for required packages
 echo "Looking for latest netcdfAll in ~/ncj/"
 ls -1r ~/ncj/netcdfAll*.jar
 rc=$((rc + $?))
@@ -36,6 +33,7 @@ if [[ "$rc" -gt 0 ]] ; then
   exit 1
 fi
 NCJv=`ls -1r ~/ncj/netcdfAll*.jar | head -n 1`
+#NCJv="${HOME}/ncj/netcdfAll-4.5.jar"
 echo "Found $NCJv"
 
 echo "Looking for java"
@@ -46,6 +44,7 @@ if [[ "$rc" -gt 0 ]] ; then
   exit 1
 fi
 JAVA=`which java`
+#JAVA="/usr/bin/java"
 echo "Found ${JAVA}"
 
 echo "------------------------------------------------------------"

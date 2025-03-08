@@ -25,16 +25,19 @@
 #    ./get_NCEP_50YearReanalysis.sh $year
 #  where $year is the year you want to get.
 
-# This is the location where the downloaded windfiles will be placed.
-# Please edit this to suit your system.
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will be placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT/USGSROOT are set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
 if [ -z ${WINDROOT} ];then
- # Standard Linux location
+ # default location
  WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
 fi
-INSTALLDIR="/opt/USGS/"
-validlist="valid_files.txt"
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
+fi
 
 echo "------------------------------------------------------------"
 echo "running get_NCEP_50YearReanalysis.sh for year $1"
@@ -98,7 +101,7 @@ endtime=`date`
 echo "download started at $starttime"
 echo "download ended at $endtime"
 echo "Checking files for valid values and time steps"
-${INSTALLDIR}/bin/MetCheck 25 2 ${NCEPDATAHOME} ${y}
+${USGSROOT}/bin/MetCheck 25 2 ${NCEPDATAHOME} ${y}
 if [[ $? -eq 0 ]]; then
    cat MetCheck_log.txt >> ${NCEPDATAHOME}/${y}/${validlist}
 fi

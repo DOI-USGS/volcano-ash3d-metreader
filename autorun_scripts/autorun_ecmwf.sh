@@ -18,10 +18,10 @@
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
 
-# Shell script that manages the download of the nam data files (AK 2.95 km or HI 2.5 km) for the
-# current date.
+# Shell script that manages the download of the ecmwf data files for the
+# current date, and converts the file to NetCDF.
 # This script expects a command line argument indicating which forecast package to download.
-#   autorun_nam.sh 091 0   for the AK HiRes 00 forecast package
+#   autorun_ecmwf.sh 0p25 0   for the 0.25 degree 00 forecast package
 
 # Check environment variable USGSROOT
 #  USGSROOT = location where the MetReader tools and scripts were placed.
@@ -32,33 +32,25 @@ if [ -z ${USGSROOT} ];then
  USGSROOT="/opt/USGS"
 fi
 
-ABRIDGED="0"            # Default is to get the whole file
-
 if [ $# -eq 0 ]
   then
   echo "No arguments supplied"
-  echo "Usage: autorun_nam.sh 091 0"
+  echo "Usage: autorun_ecmwf.sh RES FCpackage"
+  echo "       where Resolution = 0p25 (only quarter-degree implemented)"
+  echo "             FCpackage  = 0, 6, 12, 18 or 24"
   exit
 fi
 
-NAM=$1
+RES=$1
 FC=$2
 
-case ${NAM} in
- 181)
-  echo "Caribbean 0.108 deg"
-  ;;
- 196)
-  echo "HI 2.5 km"
-  ;;
- 091)
-  echo "AK 2.95"
-  ABRIDGED="1"  # These files are too big so use a special script to pull
-                # only select grib records
+case ${RES} in
+ 0p25)
+  echo "ECMWF 0.25 degree"
   ;;
  *)
-  echo "NAM product not recognized"
-  echo "Valid values: 091, 181, 196"
+  echo "ECMWF product not recognized"
+  echo "Valid values: 0p25 (only quarter-degree implemented)"
   exit
 esac
 
@@ -79,28 +71,35 @@ case ${FC} in
   FChour="18"
   FChourR="18.0"
   ;;
+ 24)
+  FChour="24"
+  FChourR="24.0"
+  ;;
  *)
-  echo "NAM forecast package not recognized"
-  echo "Valid values: 0, 6, 12, 18"
+  echo "ECMWF forecast package not recognized"
+  echo "Valid values: 0, 6, 12, 18, 24"
   exit
 esac
 
 yearmonthday=`date -u +%Y%m%d`
+# Here you can over-ride the date if need be
+#yearmonthday="20200610"
 
 echo "------------------------------------------------------------"
-echo "running autorun_nam script : ${NAM} ${yearmonthday} ${FChour}"
+echo "running autorun_ecmwf ${RES} ${yearmonthday} ${FChour} script"
 echo "------------------------------------------------------------"
 
 SCRIPTDIR="${USGSROOT}/bin/autorun_scripts"
 
 #script that gets the wind files
-if [ "$ABRIDGED" -eq "1" ]; then
- echo "  Calling ${SCRIPTDIR}/get_nam${NAM}.sh ${yearmonthday} ${FChour}"
- ${SCRIPTDIR}/get_nam${NAM}.sh ${yearmonthday} ${FChour}
-else
- echo "  Calling ${SCRIPTDIR}/get_nam.sh ${NAM} ${yearmonthday} ${FChour}"
- ${SCRIPTDIR}/get_nam.sh ${NAM} ${yearmonthday} ${FChour}
-fi
+echo "  Calling ${SCRIPTDIR}/get_ecmwf.sh ${RES} ${yearmonthday} ${FChour}"
+${SCRIPTDIR}/get_ecmwf.sh ${RES} ${yearmonthday} ${FChour}
+
+#script that converts grib2 to netcdf
+echo "  Calling ${SCRIPTDIR}/convert_ecmwf.sh ${RES} ${yearmonthday} ${FChour}"
+${SCRIPTDIR}/convert_ecmwf.sh ${RES} ${yearmonthday} ${FChour}
+
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-echo "finished autorun_nam script"
+echo "finished autorun_ecmwf script"
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+

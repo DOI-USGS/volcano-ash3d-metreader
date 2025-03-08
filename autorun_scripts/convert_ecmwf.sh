@@ -18,9 +18,9 @@
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
 
-# Script that converts the gfs grib files to netcdf using netcdf-java.
-# This script is called from autorun_gfs.sh and takes three command-line arguments
-#   convert_gfs.sh RES YYYYMMDD HR
+# Script that converts the ecmwf grib files to netcdf using netcdf-java.
+# This script is called from autorun_ecmwf.sh and takes three command-line arguments
+#   convert_ecmwf.sh RES YYYYMMDD HR
 
 # Check environment variables WINDROOT and USGSROOT
 #  WINDROOT = location where the downloaded windfiles will be placed.
@@ -44,7 +44,7 @@ rc=0
 if [ $# -eq 0 ]
   then
   echo "No arguments supplied"
-  echo "Usage: convert_gfs.sh Resolution YYYYMMDD FCpackage"
+  echo "Usage: convert_ecmwf.sh Resolution YYYYMMDD FCpackage"
   echo "       where Resolution = 1p00, 0p50, or 0p25"
   echo "             YYYYMMDD   = year, month, day"
   echo "             FCpackage  = 00, 06, 12, or 18"
@@ -84,80 +84,58 @@ echo "Found ${JAVA}"
 # Checking input parameters
 case ${RES} in
  0p25)
-  echo "GFS 0.25 degree"
-  ;;
- 0p50)
-  echo "GFS 0.50 degree"
-  ;;
- 1p00)
-  echo "GFS 1.00 degree"
+  echo "RES 0.25 degree"
   ;;
  *)
-  echo "GFS product not recognized"
-  echo "Valid values: 0p25, 0p50, 1p00"
+  echo "RES product not recognized"
+  echo "Valid values: 0p25 "
   exit
 esac
 
 echo "------------------------------------------------------------"
-echo "running convert_gfs.sh ${RES} ${yearmonthday} ${FChour}"
+echo "running convert_ecmwf.sh ${RES} ${yearmonthday} ${FChour}"
 echo `date`
 echo "------------------------------------------------------------"
 
 case ${RES} in
  0p25)
-  # GFS 0.25 degree
+  # ECMWF 0.25 degree
   HourMax=99
   HourStep=3
-  #        gfs.t00z.pgrb2.0p25.f$000
-  FilePre="gfs.t${FChour}z.pgrb2.0p25.f"
+  #        20250211000000-0h-oper-fc.grib2
+  FilePre="${yearmonthday}${FChour}0000-"
+  FilePost="h-oper-fc.grib2"
   iwf=22
   ;;
- 0p50)
-  # GFS 0.50 degree
-  HourMax=198
-  #HourMax=99
-  HourStep=3
-  #        gfs.t00z.pgrb2.0p50.f$000
-  FilePre="gfs.t${FChour}z.pgrb2.0p50.f"
-  iwf=20
-  ;;
- 1p00)
-  # GFS 1.00 degree
-  HourMax=384
-  HourStep=3
-  #        gfs.t00z.pgrb2.1p00.f$000
-  FilePre="gfs.t${FChour}z.pgrb2.1p00.f"
-  iwf=21
-  ;;
  *)
-  echo "GFS product not recognized"
-  echo "Valid values: 0p25, 0p50, 1p00"
+  echo "ECMWF product not recognized"
+  echo "Valid values: 0p25"
   exit
 esac
 
 rc=0
 validlist="valid_files.txt"
-GFSDATAHOME="${WINDROOT}/gfs"
-#if [[ -d ${GFSDATAHOME} ]] ; then
-#   echo "Error:  Download directory ${GFSDATAHOME} does not exist"
+ECMWFDATAHOME="${WINDROOT}/ecmwf"
+#if [[ -d ${ECMWFDATAHOME} ]] ; then
+#   echo "Error:  Download directory ${ECMWFDATAHOME} does not exist"
 #   rc=$((rc + 1))
 #   exit $rc
 #fi
 
 #name of directory containing current files
-FC_day=gfs.${yearmonthday}${FChour}
+FC_day=ecmwf.${yearmonthday}${FChour}
 
 #******************************************************************************
 #START EXECUTING
 
 #go to correct directory
-echo "going to ${GFSDATAHOME}/${FC_day}"
-cd ${GFSDATAHOME}/${FC_day}
+echo "going to ${ECMWFDATAHOME}/${FC_day}"
+cd ${ECMWFDATAHOME}/${FC_day}
 
 #Convert to NetCDF
 t=0
-rm -f ${GFSDATAHOME}/${FC_day}/${validlist}
-touch ${GFSDATAHOME}/${FC_day}/${validlist}
+rm -f ${ECMWFDATAHOME}/${FC_day}/${validlist}
+touch ${ECMWFDATAHOME}/${FC_day}/${validlist}
 vcount=0
 while [ "$t" -le ${HourMax} ]
 do
@@ -168,29 +146,29 @@ do
    else
       hour="$t"
   fi
-  gfsfile=${FilePre}${hour}
-  ncmlfile="gfs.t${FChour}z.f${hour}.ncml"
+  ecmwffile=${FilePre}${hour}
+  ncmlfile="ecmwf.t${FChour}z.f${hour}.ncml"
   netcdffile="${yearmonthday}${FChour}.f${hour}.nc"
   netcdf4file="${yearmonthday}${FChour}.f${hour}.nc4"
-  if test -r ${gfsfile}
+  if test -r ${ecmwffile}
   then
-     echo "making ${ncmlfile}"
-     ${INSTALLDIR}/bin/makegfsncml ${gfsfile} ${ncmlfile}
-     if [[ $? -ne 0 ]]; then
-          exit 1
-     fi
-     echo "Converting ${gfsfile} to ${netcdffile}"
+     #echo "making ${ncmlfile}"
+     #${USGSROOT}/bin/makegfsncml ${ecmwffile} ${ncmlfile}
+     #if [[ $? -ne 0 ]]; then
+     #     exit 1
+     #fi
+     echo "Converting ${ecmwffile} to ${netcdffile}"
      # Note: nc4 is significantly smaller, but the direct conversion to nc4 from netcdf-java via the flag -netcdf4
      #       results in incompatible files.  Here, we use netcdf-java to product a temporary file, then convert
      #       to nc4 with nccopy
-     echo "java -Xmx2048m -classpath ${NCJv} ucar.nc2.dataset.NetcdfDataset -in ${gfsfile} -out ${netcdffile} -IsLargeFile"
+     echo "java -Xmx2048m -classpath ${NCJv} ucar.nc2.dataset.NetcdfDataset -in ${ecmwffile} -out ${netcdffile} -IsLargeFile"
      if [ $NCv -eq 4 ]
      then
-       ${JAVA} -Xmx2048m -classpath ${NCJv} ucar.nc2.dataset.NetcdfDataset -in ${gfsfile} -out tmp.nc -IsLargeFile
+       ${JAVA} -Xmx2048m -classpath ${NCJv} ucar.nc2.dataset.NetcdfDataset -in ${ecmwffile} -out tmp.nc -IsLargeFile
        nccopy -k 4 -d 5 tmp.nc ${netcdffile}
        rm tmp.nc
      else
-       ${JAVA} -Xmx2048m -classpath ${NCJv} ucar.nc2.dataset.NetcdfDataset -in ${gfsfile} -out ${netcdffile} -IsLargeFile
+       ${JAVA} -Xmx2048m -classpath ${NCJv} ucar.nc2.dataset.NetcdfDataset -in ${ecmwffile} -out ${netcdffile} -IsLargeFile
      fi
      if [[ $? -ne 0 ]]; then
           exit 1
@@ -199,11 +177,11 @@ do
      echo "checking ${netcdffile} for corrupt values"
      ${USGSROOT}/bin/MetCheck ${iwf} 2 ${netcdffile}
      if [[ $? -eq 0 ]]; then
-       cat MetCheck_log.txt >> ${GFSDATAHOME}/${FC_day}/${validlist}
+       cat MetCheck_log.txt >> ${ECMWFDATAHOME}/${FC_day}/${validlist}
        vcount=$((vcount+1))
      fi
    else
-     echo "Warning: ${gfsfile} does not exist. Skipping."
+     echo "Warning: ${ecmwffile} does not exist. Skipping."
    fi
    t=$((t+${HourStep}))
 done
@@ -235,13 +213,13 @@ done
 
 #set soft links in "latest" directory
 echo "creating soft links in latest directory"
-mkdir -p ${GFSDATAHOME}/latest
-echo "rm ${GFSDATAHOME}/latest/*"
-rm ${GFSDATAHOME}/latest/*
-echo "rm ${GFSDATAHOME}/gfslist.txt"
-rm ${GFSDATAHOME}/gfslist.txt
-echo "4" > ${GFSDATAHOME}/gfslist.txt
-echo "$numfiles" >> ${GFSDATAHOME}/gfslist.txt
+mkdir -p ${ECMWFDATAHOME}/latest
+echo "rm ${ECMWFDATAHOME}/latest/*"
+rm ${ECMWFDATAHOME}/latest/*
+echo "rm ${ECMWFDATAHOME}/ecmwflist.txt"
+rm ${ECMWFDATAHOME}/ecmwflist.txt
+echo "4" > ${ECMWFDATAHOME}/ecmwflist.txt
+echo "$numfiles" >> ${ECMWFDATAHOME}/ecmwflist.txt
 t=0
 while [ "$t" -le ${HourMax} ]
 do
@@ -255,31 +233,21 @@ do
   netcdffile="${yearmonthday}${FChour}.f${hour}.nc"
   linkfile="latest.f${hour}.nc"
   echo "creating soft link for ${netcdffile}"
-  ln -s ${GFSDATAHOME}/${FC_day}/${netcdffile} ${GFSDATAHOME}/latest/${linkfile}
-  echo "latest/${linkfile}" >> ${GFSDATAHOME}/gfslist.txt
+  ln -s ${ECMWFDATAHOME}/${FC_day}/${netcdffile} ${ECMWFDATAHOME}/latest/${linkfile}
+  echo "latest/${linkfile}" >> ${ECMWFDATAHOME}/ecmwflist.txt
   t=$((t+3))
 done
 
-#cd ${GFSDATAHOME}
-#if test -f "${INSTALLDIR}/bin/ncGFS4_2_pf"; then
-#  PUFFDATAHOME="${WINDROOT}/puff/gfs/"
-#  mkdir -p ${PUFFDATAHOME}
-#  ${INSTALLDIR}/bin/ncGFS4_2_pf gfslist.txt
-#  echo "mv Puff__GFS_______pf.nc ${PUFFDATAHOME}/${yearmonthday}${FChour}_gfs.nc"
-#  mv Puff__GFS_______pf.nc ${yearmonthday}${FChour}_gfs.nc
-#  mv ${yearmonthday}${FChour}_gfs.nc ${PUFFDATAHOME}/${yearmonthday}${FChour}_gfs.nc
-#fi
-
 echo "removing *.ncml, *.ncx2, and *.gbx9 files"
-echo "rm ${GFSDATAHOME}/${FC_day}/*.ncml ${GFSDATAHOME}/${FC_day}/*.gbx9"
-rm -f ${GFSDATAHOME}/${FC_day}/*.ncml ${GFSDATAHOME}/${FC_day}/*.gbx9 ${GFSDATAHOME}/${FC_day}/*.ncx2
+echo "rm ${ECMWFDATAHOME}/${FC_day}/*.ncml ${ECMWFDATAHOME}/${FC_day}/*.gbx9"
+rm -f ${ECMWFDATAHOME}/${FC_day}/*.ncml ${ECMWFDATAHOME}/${FC_day}/*.gbx9 ${ECMWFDATAHOME}/${FC_day}/*.ncx2
 
 echo "writing last_downloaded.txt"
-echo ${yearmonthday}${FChour} > ${GFSDATAHOME}/last_downloaded.txt
+echo ${yearmonthday}${FChour} > ${ECMWFDATAHOME}/last_downloaded.txt
 
 echo "all done with windfiles"
 
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-echo "finished convert_gfs.sh ${RES} ${yearmonthday} ${FChour}"
+echo "finished convert_ecmwf.sh ${RES} ${yearmonthday} ${FChour}"
 echo `date`
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"

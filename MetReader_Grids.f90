@@ -22,7 +22,7 @@
 
       use MetReader,       only : &
          MR_nio,VB,outlog,errlog,verbosity_error,verbosity_production,&
-         IsLatLon_MetGrid,IsGlobal_MetGrid,IsRegular_MetGrid,isGridRelative,&
+         IsLatLon_MetGrid,IsGlobal_MetGrid,IsRegular_MetGrid,IsGridRelative,&
          Met_iprojflag,Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re,&
          MR_iversion,MR_Reannalysis,Met_gridtype,Met_proj4
 
@@ -48,6 +48,7 @@
         !        LambertConformal_Projection:standard_parallel = 38.5 ;
         !        LambertConformal_Projection:earth_radius = 6371229. ;
         ! proj +proj=lcc +lon_0=262.5 +lat_0=38.5 +lat_1=38.5 +lat_2=38.5 +R=6371.229
+        ! invproj +proj=lcc +lon_0=262.5 +lat_0=38.5 +lat_1=38.5 +lat_2=38.5 +R=6371.229 -f '%.8f'
         !   226.541 12.190
         !     -4226.108 -832.6978
         !   310.615 57.290
@@ -66,7 +67,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLC0"
         Met_iprojflag     = 4
@@ -86,6 +87,7 @@
         !        LambertConformal_Projection:standard_parallel = 50. ;
         !    Reported NARR Reanal    Lambert_Conformal:GRIB_param_grid_radius_spherical_earth = 6367.47 ;
         ! proj +proj=lcc +lon_0=-107.0 +lat_0=50.0 +lat_1=50.0 +lat_2=50.0 +R=6367.47
+        ! invproj +proj=lcc +lon_0=-107.0 +lat_0=50.0 +lat_1=50.0 +lat_2=50.0 +R=6367.47 -f '%.8f'
         !   214.50  1.0
         !     -5629.34  -4609.85
         !   357.43 46.352
@@ -104,7 +106,7 @@
         IsLatLon_MetGrid  = .false.   
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .false.
+        IsGridRelative    = .false.
         MR_Reannalysis    = .true.
 
         Met_gridtype      = "GLC0"
@@ -124,7 +126,7 @@
         IsLatLon_MetGrid  = .true.   ! this might be reset
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -136,7 +138,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -148,7 +150,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -160,7 +162,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -172,7 +174,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -184,7 +186,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .false.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -196,7 +198,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .false.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -209,14 +211,14 @@
           IsLatLon_MetGrid  = .true.
           IsGlobal_MetGrid  = .true.
           IsRegular_MetGrid = .true.
-          isGridRelative    = .true.
+          IsGridRelative    = .true.
           Met_gridtype      = "GLL0"
         elseif(MR_iversion.eq.3)then
           !v3
           IsLatLon_MetGrid  = .true.
           IsGlobal_MetGrid  = .true.
           IsRegular_MetGrid = .false.
-          isGridRelative    = .true.
+          IsGridRelative    = .true.
           Met_gridtype      = "GLL0"
         endif
       elseif(igrid.eq.2)then
@@ -227,7 +229,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -240,7 +242,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -252,7 +254,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -265,7 +267,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -302,6 +304,7 @@
         !        Polar_Stereographic:GRIB_param_grid_type = 20 ;
         !        Polar_Stereographic:GRIB_param_grid_units = "m" ;
         ! proj +proj=stere  +lon_0=210  +lat_0=90 +k_0=0.933 +R=6371.229
+        ! invproj +proj=stere  +lon_0=210  +lat_0=90 +k_0=0.933 +R=6371.229 -f '%.8f'
         !   181.42899 40.5301
         !      -2619.36159134661 -4810.03724324973
         !   266.3082 63.9757
@@ -320,7 +323,7 @@
         IsLatLon_MetGrid  = .false.   
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GST0"
         Met_iprojflag     = 1
@@ -342,6 +345,7 @@
         !        PolarStereographic_Projection:scale_factor_at_projection_origin = 0.933012701892219 ;
         !        PolarStereographic_Projection:earth_radius = 6371229. ;
         ! proj +proj=stere  +lon_0=255  +lat_0=90 +k_0=0.933 +R=6371.229
+        ! invproj +proj=stere  +lon_0=255  +lat_0=90 +k_0=0.933 +R=6371.229 -f '%.8f'
         !
         ! -6761.21 -9846.821
         ! 
@@ -360,7 +364,7 @@
         IsLatLon_MetGrid  = .false.   
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GST0"
         Met_iprojflag     = 1
@@ -379,7 +383,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .false.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -391,7 +395,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -403,7 +407,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -415,7 +419,7 @@
         IsLatLon_MetGrid  = .true.
         IsGlobal_MetGrid  = .true.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLL0"
 
@@ -449,6 +453,7 @@
         !        Mercator:GRIB_param_grid_type = 10 ;
         !        Mercator:GRIB_param_grid_units = "m" ;
         ! proj +proj=merc  +lat_ts=20.0 +lon_0=198.475 +R=6371.229
+        ! invproj +proj=merc  +lat_ts=20.0 +lon_0=198.475 +R=6371.229 -f '%.8f'
         ! 198.475 18.073
         !   0.00    1920.62
         ! 206.131 23.088
@@ -460,7 +465,7 @@
         IsLatLon_MetGrid  = .false.   
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GME0"
         Met_iprojflag     = 5
@@ -502,6 +507,7 @@
         !        Polar_Stereographic:GRIB_param_grid_type = 20 ;
         !        Polar_Stereographic:GRIB_param_grid_units = "m" ;
         ! proj +proj=stere  +lon_0=210  +lat_0=90 +k_0=0.933 +R=6371.229
+        ! invproj +proj=stere  +lon_0=210  +lat_0=90 +k_0=0.933 +R=6371.229 -f '%.8f'
         !   181.42899 40.5301
         !      -2619.36159134661 -4810.03724324973
         !   266.3082 63.9757
@@ -520,7 +526,7 @@
         IsLatLon_MetGrid  = .false.   
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GST0"
         Met_iprojflag     = 1
@@ -539,6 +545,7 @@
         !        LambertConformal_Projection:standard_parallel = 25. ;
         !        LambertConformal_Projection:earth_radius = 6371229. ;
         ! proj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229
+        ! invproj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229 -f '%.8f'
         !   226.541 12.190
         !     -4226.108 -832.6978
         !   310.615 57.290
@@ -558,7 +565,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLC0"
         Met_iprojflag     = 4
@@ -578,6 +585,7 @@
         !        LambertConformal_Projection:standard_parallel = 25. ;
         !        LambertConformal_Projection:earth_radius = 6371229. ;
         ! proj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229
+        ! invproj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229 -f '%.8f'
         !   226.541 12.190
         !     -4226.108 -832.6978
         !   310.615 57.290
@@ -597,7 +605,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLC0"
         Met_iprojflag     = 4
@@ -617,6 +625,7 @@
         !        PolarStereographic_Projection:scale_factor_at_projection_origin = 0.933012701892219 ;
         !        PolarStereographic_Projection:earth_radius = 6371229. ;
         ! proj +proj=stere  +lon_0=225  +lat_0=90 +k_0=0.933 +R=6371.229
+        ! invproj +proj=stere  +lon_0=225  +lat_0=90 +k_0=0.933 +R=6371.229 -f '%.8f'
         ! 187.0 30.0
         !   -4225.928 -5408.941
         ! 297.15 70.111
@@ -635,7 +644,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GST0"
         Met_iprojflag     = 1
@@ -654,6 +663,7 @@
         !        LambertConformal_Projection:standard_parallel = 25. ;
         !        LambertConformal_Projection:earth_radius = 6371229. ;
         ! proj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229
+        ! invproj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229 -f '%.8f'
         !   226.541 12.190
         !     -4226.108 -832.6978
         !   310.615 57.290
@@ -672,7 +682,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLC0"
         Met_iprojflag     = 4
@@ -693,6 +703,7 @@
         !    NCEP FC        LambertConformal_Projection:earth_radius = 6371229. ;
         ! Note: the NARR grid should use 1221
         ! proj +proj=lcc +lon_0=-107.0 +lat_0=50.0 +lat_1=50.0 +lat_2=50.0 +R=6371.229
+        ! invproj +proj=lcc +lon_0=-107.0 +lat_0=50.0 +lat_1=50.0 +lat_2=50.0 +R=6371.229 -f '%.8f'
         !   214.50  1.0
         !     -5632.668 -4612.566
         !   357.43 46.352
@@ -711,7 +722,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLC0"
         Met_iprojflag     = 4
@@ -731,6 +742,7 @@
         !        LambertConformal_Projection:standard_parallel = 25.0 ;
         !        LambertConformal_Projection:earth_radius = 6371229. ;
         ! proj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229
+        ! invproj +proj=lcc +lon_0=265.0 +lat_0=25.0 +lat_1=25.0 +lat_2=25.0 +R=6371.229 -f '%.8f'
         !   226.541 12.190
         !     -4226.11  -832.70
         !   310.615 57.290
@@ -749,7 +761,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GLC0"
         Met_iprojflag     = 4
@@ -769,6 +781,7 @@
         !        PolarStereographic_Projection:scale_factor_at_projection_origin = 0.933012701892219 ;
         !        PolarStereographic_Projection:earth_radius = 6371229. ;
         ! proj +proj=stere  +lon_0=225  +lat_0=90 +k_0=0.933 +R=6371.229
+        ! invproj +proj=stere  +lon_0=225  +lat_0=90 +k_0=0.933 +R=6371.229 -f '%.8f'
         ! 187.0 30.0
         !   -4225.928 -5408.941
         ! 297.15 70.111
@@ -787,7 +800,7 @@
         IsLatLon_MetGrid  = .false.
         IsGlobal_MetGrid  = .false.
         IsRegular_MetGrid = .true.
-        isGridRelative    = .true.
+        IsGridRelative    = .true.
 
         Met_gridtype      = "GST0"
         Met_iprojflag     = 1
@@ -848,7 +861,7 @@
          x_fullmet_sp,y_fullmet_sp,MR_dx_met,MR_sigma_nz_submet,&
          MR_dy_met,y_comp_sp,iend,ilhalf_fm_r,IsGlobal_MetGrid,&
          Comp_iprojflag,Comp_lam0,Comp_phi0,Comp_phi1,Comp_phi2,Comp_k0,Comp_Re,&
-         isGridRelative,bilin_map_wgt,CompPoint_on_subMet_idx,y_pad_South,y_pad_North,&
+         IsGridRelative,bilin_map_wgt,CompPoint_on_subMet_idx,y_pad_South,y_pad_North,&
          y_inverted,wrapgrid,UseFullMetGrid,ny_fullmet,ny_comp,nx_comp,nx_fullmet,&
          irhalf_fm_r,IsLatLon_MetGrid,IsPeriodic_CompGrid,jend,Map_Case,&
          Met_iprojflag,Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re,&
@@ -994,16 +1007,29 @@
           endif;enddo
           stop 1
         endif
-        iend = 1
-        do i = 1,nx_fullmet
-          ! For the end index, we assign the upper node of the interval
-          cond1 = x_fullmet_sp(i  ).lt.xUR
-          cond2 = x_fullmet_sp(i+1).ge.xUR
-          if(cond1.and.cond2) iend = i+1
-        enddo
+        if(x_fullmet_sp(nx_fullmet).ge.xUR)then
+          ! Make sure the end of the comp grid is not beyond the domain of the
+          ! met files
+          iend = 1
+          do i = 1,nx_fullmet
+            ! For the end index, we assign the upper node of the interval
+            cond1 = x_fullmet_sp(i  ).lt.xUR
+            cond2 = x_fullmet_sp(i+1).ge.xUR
+            if(cond1.and.cond2) iend = i+1
+          enddo
+        else
+          if(.not.IsGlobal_MetGrid)then
+            do io=1,MR_nio;if(VB(io).le.verbosity_error)then
+              write(errlog(io),*)"MR ERROR: xUR > x_fullmet_sp(nx_fullmet)"
+              write(errlog(io),*)"     x_fullmet_sp(nx_fullmet) = ",x_fullmet_sp(nx_fullmet)
+              write(errlog(io),*)"     xUR                      = ",xUR
+            endif;enddo
+            stop 1
+          endif
+        endif
         if(iend.eq.1)then
           if(IsGlobal_MetGrid)then
-          ! If iend was not assigned, then the wrap back to the beginning
+            ! If iend was not assigned, then the wrap back to the beginning
             iend = nx_fullmet
             do i = 1,nx_fullmet
               ! For the end index, we assign the upper node of the interval
@@ -1413,7 +1439,7 @@
       ! We might need to rotate the wind vectors on the met grid in place if
       !   we need to convert ER to GR for the same grid or
       !   we need ER vectors from a projected Met grid
-      if(.not.isGridRelative.or. &  ! We are dealing with NARR data
+      if(.not.IsGridRelative.or. &  ! We are dealing with NARR data
                Map_Case.eq.4.or. &  ! Met Grid is projected and Comp grid is Lat/Lon
                Map_Case.eq.5)then   ! Met Grid and Comp grids have different projections
         do io=1,MR_nio;if(VB(io).le.verbosity_info)then
@@ -1425,48 +1451,53 @@
                                                   ! Met grid and the earth grid; used for rotating
                                                   ! grid velocities to Earth-Relative, or in the
                                                   ! special NARR case, rotating ER to GR
-        ddeg = 1.0_dp/60.0_dp
-        do i=1,nx_submet
-          do j=1,ny_submet
-              ! Get lon/lat of point in question
-            xin = real(x_submet_sp(i),kind=dp)
-            yin = real(y_submet_sp(j),kind=dp)
-            call PJ_proj_inv(xin,yin, Met_iprojflag, &
-                          Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
-                           ptlon,ptlat)
-              ! Get projected coordinate of de at the current point
-            call PJ_proj_for(ptlon+ddeg,ptlat, Met_iprojflag, &
-                       Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
-                       xout,yout)
-            de_x = xout-xin
-            de_y = yout-yin
-            ate  = atan2(de_y,de_x)
-              ! Get projected coordinate of dw at the current point
-            call PJ_proj_for(ptlon-ddeg,ptlat, Met_iprojflag, &
-                       Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
-                       xout,yout)
-            dw_x = xout-xin
-            dw_y = yout-yin
-            atw  = atan2(dw_y,dw_x) - 3.141592653589793_dp
-              ! Get projected coordinate of dn at the current point
-            call PJ_proj_for(ptlon,ptlat+ddeg, Met_iprojflag, &
-                       Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
-                       xout,yout)
-            dn_x = xout-xin
-            dn_y = yout-yin
-            atn  = atan2(dn_y,dn_x) - 3.141592653589793_dp/2.0_dp
-              ! Get projected coordinate of ds at the current point
-            call PJ_proj_for(ptlon,ptlat-ddeg, Met_iprojflag, &
-                       Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
-                       xout,yout)
-            ds_x = xout-xin
-            ds_y = yout-yin
-            ats  = atan2(ds_y,ds_x) + 3.141592653589793_dp/2.0_dp
-              ! Now recover the angle between angle of rotation as the average angle
-              ! for all of the coordinate directions
-            theta_Met(i,j) = (ate + atw + atn + ats)*0.25_dp
+        if(Met_iprojflag.eq.5)then
+          ! Mercator projections have grid lines aligned with lat, lon
+          theta_Met(:,:) = 0.0_dp
+        else
+          ddeg = 1.0_dp/60.0_dp
+          do i=1,nx_submet
+            do j=1,ny_submet
+                ! Get lon/lat of point in question
+              xin = real(x_submet_sp(i),kind=dp)
+              yin = real(y_submet_sp(j),kind=dp)
+              call PJ_proj_inv(xin,yin, Met_iprojflag, &
+                            Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
+                             ptlon,ptlat)
+                ! Get projected coordinate of de at the current point
+              call PJ_proj_for(ptlon+ddeg,ptlat, Met_iprojflag, &
+                         Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
+                         xout,yout)
+              de_x = xout-xin
+              de_y = yout-yin
+              ate  = atan2(de_y,de_x)
+                ! Get projected coordinate of dw at the current point
+              call PJ_proj_for(ptlon-ddeg,ptlat, Met_iprojflag, &
+                         Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
+                         xout,yout)
+              dw_x = xout-xin
+              dw_y = yout-yin
+              atw  = atan2(dw_y,dw_x) - 3.141592653589793_dp
+                ! Get projected coordinate of dn at the current point
+              call PJ_proj_for(ptlon,ptlat+ddeg, Met_iprojflag, &
+                         Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
+                         xout,yout)
+              dn_x = xout-xin
+              dn_y = yout-yin
+              atn  = atan2(dn_y,dn_x) - 3.141592653589793_dp/2.0_dp
+                ! Get projected coordinate of ds at the current point
+              call PJ_proj_for(ptlon,ptlat-ddeg, Met_iprojflag, &
+                         Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re, &
+                         xout,yout)
+              ds_x = xout-xin
+              ds_y = yout-yin
+              ats  = atan2(ds_y,ds_x) + 3.141592653589793_dp/2.0_dp
+                ! Now recover the angle between angle of rotation as the average angle
+                ! for all of the coordinate directions
+              theta_Met(i,j) = (ate + atw + atn + ats)*0.25_dp
+            enddo
           enddo
-        enddo
+        endif
       endif
 
       ! theta_Met ensures that we have Met data that is Earth-Relative, even if the
@@ -1552,6 +1583,89 @@
 
       end subroutine MR_Set_MetComp_Grids
 
+!##############################################################################
+!
+!     MR_Set_LL_mapping
+!
+!     This subroutine calculates the lon/lat coordinates for each point
+!     of the Met grid.
+!
+!     Sets: 
+!           MR_Have_LL_mapping
+!           MR_xy2ll_xlon
+!           MR_xy2ll_ylat
+!           MR_lonmin,MR_lonmax
+!           MR_latmin,MR_latmax
+!
+!##############################################################################
+!
+!      subroutine MR_Set_LL_mapping
+!
+!      use MetReader,       only : &
+!         MR_nio,VB,outlog,verbosity_production,&
+!         x_submet_sp,nx_submet,y_submet_sp,ny_submet,IsLatLon_MetGrid,&
+!         Met_iprojflag,Met_lam0,Met_phi0,Met_phi1,Met_phi2,Met_k0,Met_Re,&
+!         MR_Have_LL_mapping,MR_xy2ll_xlon,MR_xy2ll_ylat,&
+!         MR_lonmin,MR_lonmax,MR_latmin,MR_latmax
+!
+!      use projection,      only : &
+!           PJ_Set_Proj_Params,&
+!           PJ_proj_for,&
+!           PJ_proj_inv
+!
+!      implicit none
+!
+!      integer, parameter :: sp        = 4 ! single precision
+!      integer, parameter :: dp        = 8 ! double precision
+!
+!      integer :: io
+!      integer :: i,j
+!      real(kind=dp) :: xin,yin
+!      real(kind=dp) :: xout,yout
+!
+!      do io=1,MR_nio;if(VB(io).le.verbosity_production)then
+!        write(outlog(io),*)"-----------------------------------------------------------------------"
+!        write(outlog(io),*)"----------                 MR_Set_LL_mapping                 ----------"
+!        write(outlog(io),*)"-----------------------------------------------------------------------"
+!      endif;enddo
+!
+!      ! This bit is needed to map topo values onto met grid points
+!      if(.not.IsLatLon_MetGrid.and. &
+!         .not.MR_Have_LL_mapping)then
+!#ifdef USEPOINTERS
+!        if(.not.associated(MR_xy2ll_xlon))allocate(MR_xy2ll_xlon(nx_submet,ny_submet))
+!        if(.not.associated(MR_xy2ll_ylat))allocate(MR_xy2ll_ylat(nx_submet,ny_submet))
+!#else
+!        if(.not.allocated(MR_xy2ll_xlon))allocate(MR_xy2ll_xlon(nx_submet,ny_submet))
+!        if(.not.allocated(MR_xy2ll_ylat))allocate(MR_xy2ll_ylat(nx_submet,ny_submet))
+!#endif
+!        MR_latmax =  -90.0_sp
+!        MR_latmin =   90.0_sp
+!        MR_lonmin =  360.0_sp
+!        MR_lonmax = -360.0_sp
+!        do i=1,nx_submet
+!          do j=1,ny_submet
+!            xin = real(x_submet_sp(i),kind=dp)  ! Projection routines use kind=8
+!            yin = real(y_submet_sp(j),kind=dp)
+!            call PJ_proj_inv(xin,yin, &
+!                           Met_iprojflag, Met_lam0,Met_phi0,Met_phi1,Met_phi2, &
+!                           Met_k0,Met_Re, &
+!                           xout,yout)
+!            if(xout.lt.MR_lonmin)MR_lonmin=real(xout,kind=sp)
+!            if(xout.gt.MR_lonmax)MR_lonmax=real(xout,kind=sp)
+!            if(yout.lt.MR_latmin)MR_latmin=real(yout,kind=sp)
+!            if(yout.gt.MR_latmax)MR_latmax=real(yout,kind=sp)
+!            MR_xy2ll_xlon(i,j) = real(xout,kind=sp)
+!            MR_xy2ll_ylat(i,j) = real(yout,kind=sp)
+!            if(MR_xy2ll_xlon(i,j).lt.0.0_sp) MR_xy2ll_xlon(i,j) = MR_xy2ll_xlon(i,j) + 360.0_sp
+!            write(*,*)i,j,MR_xy2ll_xlon(i,j),MR_xy2ll_ylat(i,j)
+!          enddo
+!        enddo
+!        MR_Have_LL_mapping = .true.
+!      endif
+!
+!      end subroutine MR_Set_LL_mapping
+!
 !##############################################################################
 
 

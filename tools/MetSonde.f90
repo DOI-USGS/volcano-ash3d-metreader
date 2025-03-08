@@ -298,9 +298,9 @@
         if(iostatus.ne.0) call MR_FileIO_Error_Handler(iostatus,arg(1:80),iomessage)
         ! Error-check inhour
         if(inhour.lt.0.0_8.or.&
-           inhour.gt.24.0_8)then
+           inhour.gt.48.0_8)then
           do io=1,MR_nio;if(VB(io).le.verbosity_error)then
-            write(errlog(io),*)"MR ERROR: hour must be in range 0.0-24.0"
+            write(errlog(io),*)"MR ERROR: hour must be in range 0.0-48.0"
             write(errlog(io),*)" inhour = ",inhour
           endif;enddo
           stop 1

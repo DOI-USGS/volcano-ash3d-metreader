@@ -23,9 +23,14 @@
 # This script expects a command line argument indicating which forecast package to download.
 #   autorun_gfs0.5deg.sh 0   for the 00 forecast package
 
-# Please edit the line below to be consistant with the install directory specified in
-# the makefile
-INSTALLDIR="/opt/USGS"
+# Check environment variable USGSROOT
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure USGSROOT is set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
+fi
 
 if [ $# -eq 0 ]
   then
@@ -65,7 +70,7 @@ echo "------------------------------------------------------------"
 echo "running autorun_gfs0.5deg ${yearmonthday} ${FChour} script"
 echo "------------------------------------------------------------"
 
-SCRIPTDIR="${INSTALLDIR}/bin/autorun_scripts"
+SCRIPTDIR="${USGSROOT}/bin/autorun_scripts"
 
 #script that gets the wind files
 echo "  Calling ${SCRIPTDIR}/get_gfs0.5deg.sh ${yearmonthday} ${FChour}"

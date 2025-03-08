@@ -197,12 +197,17 @@
         endif
         call codes_new_from_file(ifile,igribv(count1),CODES_PRODUCT_GRIB,nSTAT)
       enddo
-      count1=count1-1
+      count1 = count1-1
+      do io=1,MR_nio;if(VB(io).le.verbosity_info)then
+        write(outlog(io),*)"  Number of grib records found = ",count1
+      endif;enddo
       zcount(:)     = 0
       zlev_dum(:,:) = 0
       do ir = 1,count1
         if(ir.eq.1)then
           ! For the first record, get the x,y grid info
+          ! HFS: This is a bit of an assumption that the first grib record contains the grid
+          !      information we need.
           ReadGrid = .false.
           call codes_get(igribv(ir),'Ni',nx_fullmet,nSTAT)
           if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_get Ni ")
@@ -240,6 +245,9 @@
           call codes_get(igribv(ir),'longitudeOfLastGridPointInDegrees',dum_dp,nSTAT)
           if(nSTAT.ne.CODES_SUCCESS)then
             !call MR_GRIB_check_status(nSTAT,0,"codes_get longitudeOfLastGridPointInDegrees ")
+            ! Note: ecmwf forecasts have longitudeOfFirstGridPointInDegrees = 180.0
+            !                            longitudeOfLastGridPointInDegrees  = 179.75
+            !       Grid is not actually inverted, just wraps around
             ! assume it is not inverted
             x_inverted = .false.
           else
@@ -699,7 +707,7 @@
               endif
             enddo
           endif
-        endif !MR_GRIB_Version.eq.1 or .eq.2
+        endif ! MR_GRIB_Version.eq.1 or .eq.2
       enddo
 
       do ir = 1,count1
@@ -896,7 +904,7 @@
 !
 !     Called once from MR_Read_Met_DimVars 
 !
-!     This subroutine opens each GRIB file and determine the time of each
+!     This subroutine opens each GRIB file and determines the time of each
 !     time step of each file in the number of hours since MR_BaseYear.
 !     In most cases, the length of the time variable (nt_fullmet) will be 
 !     read directly from the file and overwritten (is was set in MR_Read_Met_DimVars_GRIB
@@ -922,6 +930,7 @@
 
       integer, parameter :: sp        = 4 ! single precision
       !integer, parameter :: dp        = 8 ! double precision
+      integer, parameter :: MAXGRIBREC = 10000
 
       integer :: iw,iws
       integer :: itstart_year,itstart_month
@@ -938,8 +947,9 @@
       integer            :: dataTime
       integer            :: forecastTime
       integer            :: ifile
-!      integer            :: iret
-      integer            :: igrib
+      integer            :: count1
+      integer,dimension(MAXGRIBREC) :: igribv
+      integer(kind=4)    :: typeOfFirstFixedSurface
       integer            :: nSTAT
 
       integer :: io                           ! Index for output streams
@@ -1046,22 +1056,41 @@
 
           call codes_open_file(ifile,trim(adjustl(MR_windfiles(iw))),'R',nSTAT)
           if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_open_file ")
-          call codes_new_from_file(ifile,igrib,CODES_PRODUCT_GRIB,nSTAT)
+
+          count1=1
+          call codes_new_from_file(ifile,igribv(count1),CODES_PRODUCT_GRIB,nSTAT)
+          if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_new_from_file ")
+
+          typeOfFirstFixedSurface = -1
+
+          do while (count1.lt.100)  ! Read up to the first 100 grib records looking for a
+                                    ! pressure level
+            call codes_get(igribv(count1),'typeOfFirstFixedSurface', typeOfFirstFixedSurface,nSTAT)
+            if(nSTAT.ne.CODES_SUCCESS) exit
+            ! for populating z-levels, we are only concerned with specific level types
+            if(typeOfFirstFixedSurface.eq.100) exit ! Isobaric surface  (Pa)
+            ! if we haven't found a pressure level, keep looking, some surface variables
+            ! are not for the expected forcast hour
+            count1 = count1+1
+            call codes_new_from_file(ifile,igribv(count1),CODES_PRODUCT_GRIB,nSTAT)
+          enddo
+
+
           if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_new_from_file ")
           if(iw.eq.1) then
-            call codes_get(igrib,'editionNumber',MR_GRIB_Version,nSTAT)
+            call codes_get(igribv(count1),'editionNumber',MR_GRIB_Version,nSTAT)
             if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_get editionNumber ")
           endif
-          call codes_get(igrib,'dataDate',dataDate,nSTAT)
+          call codes_get(igribv(count1),'dataDate',dataDate,nSTAT)
           if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_get dataDate ")
-          call codes_get(igrib,'dataTime',dataTime,nSTAT)
+          call codes_get(igribv(count1),'dataTime',dataTime,nSTAT)
           if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_get dataTime ")
 
           if(MR_GRIB_Version.eq.1)then
             ! The only grib1 files we deal with are reanalysis files with no FC time
             forecastTime = 0
           else
-            call codes_get(igrib,'forecastTime',forecastTime,nSTAT)
+            call codes_get(igribv(count1),'forecastTime',forecastTime,nSTAT)
             if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_get forecastTime ")
           endif
 
@@ -1078,7 +1107,7 @@
                itstart_hour,itstart_min,itstart_sec
           endif;enddo
 
-          call codes_release(igrib,nSTAT)
+          call codes_release(igribv(count1),nSTAT)
           if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_release ")
           call codes_close_file(ifile,nSTAT)
           if(nSTAT.ne.CODES_SUCCESS)call MR_GRIB_check_status(nSTAT,1,"codes_close_file ")
@@ -1094,6 +1123,7 @@
 
         enddo
       endif
+
 2100  format(20x,a11,i4,1x,i2,1x,i2,1x,i2,1x,i2,1x,i2)
 
       ! Finished setting up the start time of each wind file in HoursSince : MR_windfile_starthour(iw)

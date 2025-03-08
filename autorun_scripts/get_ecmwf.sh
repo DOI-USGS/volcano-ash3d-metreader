@@ -18,10 +18,10 @@
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
 
-# Shell script that downloads gfs data files (1, 0.5, or 0.25 deg.) for the date supplied
+# Shell script that downloads ecmwf data files (only 0.25 deg.) for the date supplied
 # on the command line.
-# This script is called from autorun_gfs.sh and takes three command-line arguments
-#   get_gfs.sh RES YYYYMMDD HR
+# This script is called from autorun_ecmwf.sh and takes three command-line arguments
+#   get_ecmwf.sh RES YYYYMMDD HR
 
 # Check environment variables WINDROOT and USGSROOT
 #  WINDROOT = location where the downloaded windfiles will be placed.
@@ -37,12 +37,12 @@ if [ -z ${USGSROOT} ];then
  USGSROOT="/opt/USGS"
 fi
 
-GFSDATAHOME="${WINDROOT}/gfs"
+ECMWFDATAHOME="${WINDROOT}/ecmwf"
 
 if [ $# -eq 0 ]
   then
   echo "No arguments supplied"
-  echo "Usage: get_gfs.sh RES YYYYMMDD FCpackage"
+  echo "Usage: get_ecmwf.sh RES YYYYMMDD FCpackage"
   echo "       where Resolution = 1p00, 0p50, or 0p25"
   echo "             YYYYMMDD   = date"
   echo "             FCpackage  = 0, 6, 12, or 18"
@@ -53,77 +53,62 @@ RES=$1
 yearmonthday=$2
 FChour=$3
 
-#SERVER="https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod"
-SERVER="ftp://ftp.ncep.noaa.gov/pub/data/nccf/com/gfs/prod"
-
+SERVER="https://data.ecmwf.int/forecasts/"
 
 echo "------------------------------------------------------------"
-echo "running get_gfs.sh ${RES} ${yearmonthday} ${FChour}"
+echo "running get_ecmwf.sh ${RES} ${yearmonthday} ${FChour}"
 echo `date`
 echo "------------------------------------------------------------"
 t0=`date`
 
 case ${RES} in
  0p25)
-  # RES 0.25 degree
+  # ECMWF 0.25 degree
   HourMax=99
   HourStep=3
-  #        gfs.t00z.pgrb2.0p25.f$000
-  FilePre="gfs.t${FChour}z.pgrb2.0p25.f"
-  ;;
- 0p50)
-  # RES 0.50 degree
-  HourMax=198
-  HourStep=3
-  #        gfs.t00z.pgrb2.0p50.f$000
-  FilePre="gfs.t${FChour}z.pgrb2.0p50.f"
-  ;;
- 1p00)
-  # RES 1.00 degree
-  HourMax=384
-  HourStep=3
-  #        gfs.t00z.pgrb2.1p00.f$000
-  FilePre="gfs.t${FChour}z.pgrb2.1p00.f"
+  #        20250211000000-0h-oper-fc.grib2
+  FilePre="${yearmonthday}${FChour}0000-"
+  FilePost="h-oper-fc.grib2"
   ;;
  *)
-  echo "GFS product not recognized"
-  echo "Valid values: 0p25, 0p50, 1p00"
+  echo "ECMWF product not recognized"
+  echo "Valid values: 0p25"
   exit
 esac
 
-
 rc=0
-GFSDATAHOME="${WINDROOT}/gfs"
-install -d ${GFSDATAHOME}
+ECMWFDATAHOME="${WINDROOT}/ecmwf"
+install -d ${ECMWFDATAHOME}
 if [[ $? -ne 0 ]] ; then
-   echo "Error:  Download directory ${GFSDATAHOME} cannot be"
+   echo "Error:  Download directory ${ECMWFDATAHOME} cannot be"
    echo "        created or has insufficient write permissions."
    rc=$((rc + 1))
    exit $rc
 fi
 
 #name of directory containing current files
-FC_day=gfs.${yearmonthday}${FChour}
+FC_day=ecmwf.${yearmonthday}${FChour}
 
 #******************************************************************************
 #START EXECUTING
 
 #go to correct directory
-cd $GFSDATAHOME
+cd $ECMWFDATAHOME
 mkdir -p $FC_day
 cd $FC_day
 
 t=0
 while [ "$t" -le ${HourMax} ]; do
-  if [ "$t" -le 9 ]; then
-      hour="00$t"
-   elif [ "$t" -le 99 ]; then
-      hour="0$t"
-   else
-      hour="$t"
-  fi
-  INFILE=${FilePre}${hour}
-  fileURL=${SERVER}/gfs.${yearmonthday}/${FChour}/atmos/${INFILE}
+  #if [ "$t" -le 9 ]; then
+  #    hour="00$t"
+  # elif [ "$t" -le 99 ]; then
+  #    hour="0$t"
+  # else
+  #    hour="$t"
+  #fi
+  INFILE=${FilePre}${t}${FilePost}
+  fileURL=${SERVER}/${yearmonthday}/${FChour}z/ifs/${RES}/oper/${INFILE}
+
   echo "wget ${fileURL}"
   time wget ${fileURL}
   ${USGSROOT}/bin/gen_GRIB_index $INFILE
@@ -136,6 +121,6 @@ t1=`date`
 echo "download start: $t0"
 echo "download   end: $t1"
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-echo "finished get_gfs0.5deg.sh ${RES} ${yearmonthday} ${FChour}"
+echo "finished get_ecmwf.sh ${RES} ${yearmonthday} ${FChour}"
 echo `date`
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"

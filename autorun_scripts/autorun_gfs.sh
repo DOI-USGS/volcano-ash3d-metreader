@@ -23,23 +23,28 @@
 # This script expects a command line argument indicating which forecast package to download.
 #   autorun_gfs.sh 0p25 0   for the 0.25 degree 00 forecast package
 
-# Please edit the line below to be consistant with the install directory specified in
-# the makefile
-INSTALLDIR="/opt/USGS"
+# Check environment variable USGSROOT
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure USGSROOT is set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
+fi
 
 if [ $# -eq 0 ]
   then
   echo "No arguments supplied"
-  echo "Usage: autorun_gfs.sh Resolution FCpackage"
+  echo "Usage: autorun_gfs.sh RES FCpackage"
   echo "       where Resolution = 1p00, 0p50, or 0p25"
   echo "             FCpackage  = 0, 6, 12, 18 or 24"
   exit
 fi
 
-GFS=$1
+RES=$1
 FC=$2
 
-case ${GFS} in
+case ${RES} in
  0p25)
   echo "GFS 0.25 degree"
   ;;
@@ -87,18 +92,18 @@ yearmonthday=`date -u +%Y%m%d`
 #yearmonthday="20200610"
 
 echo "------------------------------------------------------------"
-echo "running autorun_gfs ${GFS} ${yearmonthday} ${FChour} script"
+echo "running autorun_gfs ${RES} ${yearmonthday} ${FChour} script"
 echo "------------------------------------------------------------"
 
-SCRIPTDIR="${INSTALLDIR}/bin/autorun_scripts"
+SCRIPTDIR="${USGSROOT}/bin/autorun_scripts"
 
 #script that gets the wind files
-echo "  Calling ${SCRIPTDIR}/get_gfs.sh ${GFS} ${yearmonthday} ${FChour}"
-${SCRIPTDIR}/get_gfs.sh ${GFS} ${yearmonthday} ${FChour}
+echo "  Calling ${SCRIPTDIR}/get_gfs.sh ${RES} ${yearmonthday} ${FChour}"
+${SCRIPTDIR}/get_gfs.sh ${RES} ${yearmonthday} ${FChour}
 
 #script that converts grib2 to netcdf
-echo "  Calling ${SCRIPTDIR}/convert_gfs.sh ${GFS} ${yearmonthday} ${FChour}"
-${SCRIPTDIR}/convert_gfs.sh ${GFS} ${yearmonthday} ${FChour}
+echo "  Calling ${SCRIPTDIR}/convert_gfs.sh ${RES} ${yearmonthday} ${FChour}"
+${SCRIPTDIR}/convert_gfs.sh ${RES} ${yearmonthday} ${FChour}
 
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo "finished autorun_gfs script"

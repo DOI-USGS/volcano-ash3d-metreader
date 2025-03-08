@@ -20,17 +20,18 @@
 
 # Shell script that manages the download of the NCEP 2.5 degree Reanalysis data files.
 
-# Please edit the line below to be consistant with the install directory specified in
-# the makefile
-INSTALLDIR="/opt/USGS"
-# This is the location where the downloaded windfiles will be placed.
-# Please edit this to suit your system or ensure WINDROOT is set as an environment variable
-# in ~/.bash_profile or ~/.bashrc
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT/USGSROOT are set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
 if [ -z ${WINDROOT} ];then
- # Standard Linux location
+ # default location
  WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
+fi
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
 fi
 
 echo "------------------------------------------------------------"
@@ -38,7 +39,7 @@ echo "running NCEP_50year_Reanalysis.sh"
 echo `date`
 echo "------------------------------------------------------------"
 
-SCRIPTDIR="${INSTALLDIR}/bin/autorun_scripts"
+SCRIPTDIR="${USGSROOT}/bin/autorun_scripts"
 echo "SCRIPTDIR=$SCRIPTDIR"
 
 starttime=`date`                  #record when we're starting the download

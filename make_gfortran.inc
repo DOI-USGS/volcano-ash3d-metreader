@@ -11,7 +11,12 @@ LIBS = $(COMPLIBS) $(COMPINC)
 # Debugging flags
 ifeq ($(RUN), DEBUG)
     # consider including -lefence for debugging
-    FFLAGS = -O0 -g3 -Wall -Wextra -fimplicit-none -Wline-truncation -Wcharacter-truncation -Waliasing -Wimplicit-interface -Wunused-parameter -fwhole-file -fcheck=all -std=f2008 -pedantic -fbacktrace -Wunderflow -ffpe-trap=invalid,zero,overflow -Wuninitialized -Wmaybe-uninitialized -ffpe-summary=all -finit-integer=-2147483647 -finit-real=snan -fno-unsafe-math-optimizations -fsignaling-nans -frounding-math -Wno-surprising
+    #  Note that -Wall   = -Waliasing -Wampersand -Wconversion -Wsurprising -Wc-binding-type
+    #                      -Wintrinsics-std -Wtabs -Wintrinsic-shadow -Wline-truncation
+    #                      -Wtarget-lifetime -Winteger-division -Wreal-q-constant -Wunused
+    #                      -Wundefined-do-loop
+    #    and     -Wextra = -Wcompare-reals, -Wunused-parameter -Wdo-subscript
+    FFLAGS = -O0 -g3 -Wall -Wextra -Wcharacter-truncation -Wimplicit-interface -Wunderflow -Wuninitialized -Wmaybe-uninitialized -Wno-surprising -fimplicit-none -fwhole-file -fcheck=all -std=f2008 -pedantic -fbacktrace -ffpe-trap=invalid,zero,overflow -ffpe-summary=all -finit-integer=-2147483647 -finit-real=snan -fno-unsafe-math-optimizations -fsignaling-nans -frounding-math
 endif
 
 # Profiling flags

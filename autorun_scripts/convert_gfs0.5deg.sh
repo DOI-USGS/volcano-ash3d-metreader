@@ -22,20 +22,27 @@
 # This script is called from autorun_gfs0.5deg.sh and takes two command-line arguments
 #   get_gfs0.5deg.sh YYYYMMDD HR
 
-# This is the location where the downloaded windfiles will be placed.
-# Please edit this to suit your system or ensure WINDROOT is set as an environment variable
-# in ~/.bash_profile or ~/.bashrc
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will be placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT/USGSROOT are set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
 if [ -z ${WINDROOT} ];then
- # Standard Linux location
+ # default location
  WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
+fi
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
 fi
 
-# Please edit these variables to match your system and location of netcdf-java
-#JAVA="/usr/local/bin/"
-#NCJv="~/ncj/netcdfAll-4.5.jar"
+# Select the netcdf version to write
+#NCv=3
+NCv=4
 rc=0
+yearmonthday=$1
+FChour=$2
+# Search for required packages
 echo "Looking for latest netcdfAll in ~/ncj/"
 ls -1r ~/ncj/netcdfAll*.jar
 rc=$((rc + $?))
@@ -47,6 +54,7 @@ if [[ "$rc" -gt 0 ]] ; then
   exit 1
 fi
 NCJv=`ls -1r ~/ncj/netcdfAll*.jar | head -n 1`
+#NCJv="${HOME}/ncj/netcdfAll-4.5.jar"
 echo "Found $NCJv"
 
 echo "Looking for java"
@@ -57,10 +65,9 @@ if [[ "$rc" -gt 0 ]] ; then
   exit 1
 fi
 JAVA=`which java`
+#JAVA="/usr/bin/java"
 echo "Found ${JAVA}"
 
-yearmonthday=$1
-FChour=$2
 
 GFS="0p50"
 HourMax=198

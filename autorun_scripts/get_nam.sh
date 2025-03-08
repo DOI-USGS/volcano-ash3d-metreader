@@ -18,14 +18,23 @@
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
 
-# This is the location where the downloaded windfiles will be placed.
-# Please edit this to suit your system or ensure WINDROOT is set as an environment variable
-# in ~/.bash_profile or ~/.bashrc
+# Shell script that downloads nam data files (091, 181, 196) for the date supplied
+# on the command line.
+# This script is called from autorun_nam.sh and takes three command-line arguments
+#   get_ecmwf.sh NAM YYYYMMDD HR
+
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will be placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT/USGSROOT are set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
 if [ -z ${WINDROOT} ];then
- # Standard Linux location
+ # default location
  WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
+fi
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
 fi
 
 NAM=$1
@@ -101,8 +110,8 @@ while [ "$t" -le ${HourMax} ]; do
   INFILE=${FilePre}${hour}${FilePost}
   fileURL=${SERVER}/nam.${yearmonthday}/$INFILE
   time wget ${fileURL}
-  /opt/USGS/bin/gen_GRIB2_index $INFILE
-  /opt/USGS/bin/autorun_scripts/grib2nc $INFILE
+  ${USGSROOT}/bin/gen_GRIB_index $INFILE
+  ${USGSROOT}/bin/autorun_scripts/grib2nc.sh $INFILE
   t=$(($t+${HourStep}))
 done
 
@@ -114,3 +123,7 @@ ln -s ../$FC_day/* .
 t1=`date`
 echo "download start: $t0"
 echo "download   end: $t1"
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "finished get_nam.sh ${NAM} ${yearmonthday} ${FChour}"
+echo `date`
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"

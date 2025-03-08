@@ -61,6 +61,8 @@ USEGRIB   = T
 # If you need pointer arrays instead of allocatable arrays, set this to 'T'
 USEPOINTERS = F
 
+# DATA LOCATION
+WINDROOT=/data/WindFiles
 ###############################################################################
 #####  END OF USER SPECIFIED FLAGS  ###########################################
 ###############################################################################
@@ -92,6 +94,7 @@ else
 endif
 
 # location of HoursSince and projection
+USGSROOT = $(INSTALLDIR)
 USGSLIBDIR = -L$(INSTALLDIR)/lib
 USGSINC = -I$(INSTALLDIR)/include
 USGSLIB = $(USGSINC) $(USGSLIBDIR) -lhourssince -lprojection
@@ -130,6 +133,9 @@ AUTOSCRIPTS = \
  autorun_scripts/autorun_gfs.sh \
  autorun_scripts/get_gfs.sh     \
  autorun_scripts/convert_gfs.sh \
+ autorun_scripts/autorun_ecmwf.sh \
+ autorun_scripts/get_ecmwf.sh     \
+ autorun_scripts/convert_ecmwf.sh \
  autorun_scripts/autorun_nam.sh \
  autorun_scripts/get_nam.sh     \
  autorun_scripts/autorun_NCEP_50YearReanalysis.sh \
@@ -143,6 +149,13 @@ AUTOSCRIPTS = \
 ###############################################################################
 
 all: ${lib} tools
+	$(info -------------------------------------)
+	$(info  Before running 'make check', set the WINDROOT and USGSROOT environment variables.)
+	$(info  e.g. execute: )
+	$(info  export WINDROOT="${WINDROOT}")
+	$(info  export USGSROOT="${USGSROOT}")
+	$(info            or: source set_MR.env)
+	$(info -------------------------------------)
 
 lib: $(LIB)
 
@@ -155,7 +168,7 @@ MetReader.o: MetReader.F90 makefile $(SYSINC)
 	sh get_version.sh
 	$(FC) $(FPPFLAGS) $(EXFLAGS) $(LIBS) $(USGSLIB) -c MetReader.F90
 MetReader_Grids.o: MetReader_Grids.f90 MetReader.o makefile $(SYSINC)
-	$(FC) $(FFLAGS) $(EXFLAGS) $(LIBS) $(USGSLIB) -c MetReader_Grids.f90
+	$(FC) $(FPPFLAGS) $(FFLAGS) $(EXFLAGS) $(LIBS) $(USGSLIB) -c MetReader_Grids.f90
 MetReader_ASCII.o: MetReader_ASCII.f90 MetReader.o makefile $(SYSINC)
 	$(FC) $(FFLAGS) $(EXFLAGS) $(LIBS) $(USGSLIB) -c MetReader_ASCII.f90
 
@@ -240,11 +253,14 @@ uninstall:
 	rm -f $(INSTALLDIR)/bin/MR_ASCII_check
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/autorun_gfs.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/autorun_nam.sh
+	rm -f $(INSTALLDIR)/bin/autorun_scripts/autorun_ecmwf.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/autorun_NCEP_50YearReanalysis.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/get_gfs.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/get_nam.sh
+	rm -f $(INSTALLDIR)/bin/autorun_scripts/get_ecmwf.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/get_NCEP_50YearReanalysis.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/convert_gfs.sh
+	rm -f $(INSTALLDIR)/bin/autorun_scripts/convert_ecmwf.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/grib2nc.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/prune_windfiles.sh
 	rm -f $(INSTALLDIR)/bin/autorun_scripts/get_gmao.sh

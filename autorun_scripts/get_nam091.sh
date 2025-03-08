@@ -18,17 +18,24 @@
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
 
-# This is the location where the downloaded windfiles will be placed.
-# Please edit this to suit your system or ensure WINDROOT is set as an environment variable
-# in ~/.bash_profile or ~/.bashrc
-if [ -z ${WINDROOT} ];then
- # Standard Linux location
- WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
-fi
+# Shell script that downloads nam data files (091, 181, 196) for the date supplied
+# on the command line.
+# This script is called from autorun_nam.sh and takes three command-line arguments
+#   get_ecmwf.sh NAM YYYYMMDD HR
 
-INSTALLDIR="/opt/USGS"
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will be placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT/USGSROOT are set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
+if [ -z ${WINDROOT} ];then
+ # default location
+ WINDROOT="/data/WindFiles"
+fi
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
+fi
 
 yearmonthday=$1
 FChour=$2
@@ -248,7 +255,7 @@ while [ "$t" -le ${HourMax} ]; do
 
   # Now bundle all these grib2 files into a grib2 file for this timestep
   cat iso2.grib2 iso3.grib2 hag7.grib2 dbsl.grib2 surf.grib2 misc2d.grib2 > ${OUTFILE}
-  ${INSTALLDIR}/bin/gen_GRIB_index ${OUTFILE}
+  ${USGSROOT}/bin/gen_GRIB_index ${OUTFILE}
 
   rm -f iso2.grib2 iso3.grib2 hag7.grib2 dbsl.grib2 surf.grib2 misc2d.grib2 rec.tmp tmp.grib2
 

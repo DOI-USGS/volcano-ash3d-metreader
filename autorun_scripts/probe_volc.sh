@@ -28,16 +28,21 @@
 # overridden by setting the variable 'yearmonthday'
 #   probe_volc.sh gfs0p50 0   for the 0.5 degree 00 forecast package
 
-# Please edit the line below to be consistant with the install directory specified in
-# the makefile
+# Check environment variables WINDROOT and USGSROOT
+#  WINDROOT = location where the downloaded windfiles will be placed.
+#  USGSROOT = location where the MetReader tools and scripts were placed.
+# Please edit these to suit your system or ensure WINDROOT/USGSROOT are set as environment
+# variables in ${HOME}/.bash_profile or ${HOME}/.bashrc
 if [ -z ${WINDROOT} ];then
- # Standard Linux location
+ # default location
  WINDROOT="/data/WindFiles"
- # Mac
- #WINDROOT="/opt/data/WindFiles"
 fi
-INSTALLDIR="/opt/USGS"
-VOLCFILE="${INSTALLDIR}/share/volc_NOVAC.txt"
+if [ -z ${USGSROOT} ];then
+ # default location
+ USGSROOT="/opt/USGS"
+fi
+
+VOLCFILE="${USGSROOT}/share/volc_NOVAC.txt"
 
 if [ $# -eq 0 ]
   then
@@ -106,7 +111,7 @@ echo "------------------------------------------------------------"
 echo "running probe_volc ${PROD} ${yearmonthday} ${FChour} script"
 echo "------------------------------------------------------------"
 
-SCRIPTDIR="${INSTALLDIR}/bin/autorun_scripts"
+SCRIPTDIR="${USGSROOT}/bin/autorun_scripts"
 
 #####  This is where the output files will be written
 SONDEDIR="${WINDROOT}/sonde"
@@ -167,8 +172,8 @@ do
   
   
     ln -s ${WINDPATH}/${WINDFILE} .
-    echo "${INSTALLDIR}/bin/probe_Met ${WINDFILE} ${ARGS}"
-    ${INSTALLDIR}/bin/probe_Met ${WINDFILE} ${ARGS}
+    echo "${USGSROOT}/bin/probe_Met ${WINDFILE} ${ARGS}"
+    ${USGSROOT}/bin/probe_Met ${WINDFILE} ${ARGS}
     HourOffset=`echo "${FChour} + ${t}"  | bc`
     NewYYYYMMDD=`date -d"${yearmonthday} +${HourOffset} hour" -u +%Y%m%d`
     Newhour=`date -d"${yearmonthday} +${HourOffset} hour" -u +%H`
